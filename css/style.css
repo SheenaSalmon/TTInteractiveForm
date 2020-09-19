@@ -34,6 +34,16 @@ a {
   text-decoration: none;
 }
 
+
+/*==================================
+Added Styles 
+====================================*/
+.alert-message{
+	color:red;
+	font-weight: bold;
+	text-align: center;
+	font-size: 1.5em;
+}
 /* ================================= 
   Form Element Styles
 ==================================== */
