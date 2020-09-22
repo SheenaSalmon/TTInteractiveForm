@@ -1,155 +1,144 @@
 //wait for the page to load before executing the code
 document.addEventListener("DOMContentLoaded",(e) =>
 {
+    //T-Shirt form elements
     const designMenu=document.getElementById("design");
     const jspunsColor=document.getElementById("jspuns-color");
     const jsheartColor=document.getElementById("jsheart-color");
     const themeColor=document.getElementById("theme-color");
-    const activityCheckbox=document.querySelector(".activities");
 
+    //Activity form elements
+    const activityCheckbox=document.querySelector(".activities");
+    const checkBoxesAct=activityCheckbox.querySelectorAll("input");
+
+    //Form function elements
+    const form=document.querySelector("form"); 
+    const buttonSubmit=document.querySelector("[type ='submit']");
+
+    //Name and email form elements
+    const name=document.getElementById("name");    
+    const email=document.getElementById("mail");    
+
+    //Credit and Payment  form elements
     const payPal = document.getElementById("paypal");
     const creditCard=document.getElementById("credit-card");
     const bitcoin=document.getElementById("bitcoin");
-    const buttonSubmit=document.querySelector("[type ='submit']");
-    const name=document.getElementById("name");
-    const form=document.querySelector("form");
-    const email=document.getElementById("mail");
-    const checkBoxesAct=activityCheckbox.querySelectorAll("input");
-    //console.log(checkBoxesAct[1]);
-    //console.log(checkBoxesAct);
     const ccNumber=document.getElementById("cc-num");
     const cvv=document.getElementById("cvv");
     const zip =document.getElementById("zip");
 
+    name.focus(); //The focus is now on the first field
+    //alertFields={};//object for alert fields;
 
+
+    //Create field to hold the total cost of the activities selected
+    const totalField=document.createElement("p");
+    activityCheckbox.insertAdjacentElement("beforeend",totalField);
+    totalField.innerText="Total Price: ";
+    let total= 0;//Set the starting total to  0
+
+    //Creat the "Other" job input field
+    const otherTitle=document.getElementById("other-title");
+    otherTitle.style.display="none";
+
+    //Start of functions to check the Credit Card data
     function checkCCNumber()
-    {
-        //console.log(ccNumber.value);
-        //(/\d{13-16}/.test(ccNumber.value));
-
-        let correct=  /^\d{13,16}$/.test(ccNumber.value);
-        if (correct == false)
-        {
-            alertForFields(ccNumber, "Please enter a credit card number between 13 and 16 digits.");
-        }
-        return  correct;
+    {        
+        return  checkFields(/^\d{13,16}$/,ccNumber,"Please enter a credit card number between 16 and 16 digits.");
     }
 
     function checkCVVNumber()
-    {
-        //console.log(cvv.value);
-        let correct =/^\d{3}$/.test(cvv.value);
-        if(correct == false)
-        {
-            alertForFields(cvv,"Please enter your 3 digit CVV number")
-        }
-        return correct;
+    {        
+        return checkFields(/^\d{3}$/,cvv,"The enter your 3 digit CVV");
     }
 
     function checkCCZip()
-    {
-        //console.log(zip.value);
-        let correct = /^[0-9]{5}$/.test(zip.value);
-        if (correct==false)
-        {
-            alertForFields(zip, "Please enter your 5 digit zip code");
-        }
-        return correct;
-
+    {  
+        return checkFields(/^[0-9]{5}$/,zip,"Please enter a 5 digit zip code")
     }
 
     function checkCreditCard()
     {
-        let cc= checkCCNumber() && checkCVVNumber() && checkCCZip();
-        //alert(`${checkCCZip} and ${checkCVVNumber} and ${checkCCZip}`);
+        let CCNum=checkCCNumber();
+        let CVVNum=checkCVVNumber();
+        let CCZip=checkCCZip();
+
+        let cc= CCNum && CVVNum && CCZip;
         return cc;
-
     }
-   
+  //end of functions to check the credit card data 
 
+  //check the name field
 function checkName()
-
 {
-    let correct= /^[a-z]+$/i.test(name.value);
-    if(correct==false){
-    alertForFields(name,"Please include a name");
-    
-    }
-    return correct;
+     return checkFields(/^[a-z]+$/i,name, "Please provide your name.");
 }
 
+//check the email field
 function checkEmail()
 {
-    let correct= /^[^@]+@[^@.]+\.[a-z]+$/i.test(email.value);
-    if(correct==false)
-    {
-        alertForFields(email,"Please enter a valid e-mail address");
-    }
-    return correct;
+    return checkFields(/^[^@]+@[^@.]+\.[a-z]+$/i,email,"Please enter a valid e-mail address")
 }
 
+
+//check the activities field
 function checkActivities()
-{
-    
+{    
     let count=0;
-    //console.log(checkBoxesAct.length);
+    let correct=false;
     for (let i=0;  i<checkBoxesAct.length; i++)
     {
-        //console.log(i);
-        //console.log(checkBoxesAct[i].checked);
-        if (checkBoxesAct[i].checked == true)
+       if (checkBoxesAct[i].checked == true)
         {
-            count++;
-            
+            count++;            
         }
-
     }
 
     if(count >0)
     {
-        return true;
+        correct= true;
     }
-    alertForFields(activityCheckbox,"Please select at least one event to attend.")
-    return false;
-    
+    alertForFields(activityCheckbox,"Please select at least one event to attend.",correct)
+    return correct;   
 }
 
 
-
+//add eventlistener to submit button, if any of the fields are incorrect do not submit the form
 buttonSubmit.addEventListener("click", (e)=>
 {
     e.preventDefault() ;   
     let creditcheck=true;
-     if(creditCard.style.display=="block")
-     {
-       // alert("Checking the credit");
-        creditcheck = checkCreditCard();
-        
-          
-        
+     if(paymentSelect.value=="credit card")
+     {      
+        creditcheck = checkCreditCard();       
     }
-
+    console.log(creditcheck);
+    let actC=checkActivities() ;
+    let nameC=checkName() ;
+    let emailC=checkEmail();
     
-    let readSubmit=checkActivities() && checkName() && checkEmail() && creditcheck ;
-    //console.log(`${checkActivities()} && ${checkName()} && ${checkEmail()} && ${creditcheck}`)
+    let readSubmit=actC && nameC && emailC && creditcheck ;
+    
     if( readSubmit==false  )
     {
-        //console.log(`Form not submitted ${name.value}` );
-        e.preventDefault() ;   
+         e.preventDefault() ;   
     }
    
     else{
-       // console.log(`Form submitted ${name.value}` );
+      
         form.submit();
     }
     
 });
-
+    //Hide the Paypal message, Credit Card input fields, and Bitcoin message
     payPal.style.display ="none";
-    creditCard.style.display = "none";
+    //creditCard.style.display = "none";
     bitcoin.style.display="none";
 
+    //check to see which payment type is selected and then show the additional fields related to that payment type
     const paymentSelect=document.getElementById("payment")
+    paymentSelect.value="credit card";
+
     paymentSelect.addEventListener("change",e=>{
         if(e.target.value=="credit card"){
             creditCard.style.display="block";
@@ -172,21 +161,14 @@ buttonSubmit.addEventListener("click", (e)=>
         }
     })
 
-    const totalField=document.createElement("p");
-    activityCheckbox.insertAdjacentElement("beforeend",totalField);
-    totalField.innerText="Total Price: ";
-    let total= 0;
+    //
+    
 
-    console.log(themeColor);
-    jsheartColor.style.display="none";
-    jspunsColor.style.display="none";
-   
-    const nameInput=document.querySelector("#name");
-    nameInput.focus(); //The focus is now on the first field
+    
 
-    const otherTitle=document.getElementById("other-title");
-    otherTitle.style.display="none";
+ 
 
+    //Add and event listener for check the the Job Title, if the job title is "Other", display that created element
     const jobTitle=document.getElementById("title");
     jobTitle.addEventListener("change",
     (e)=>{
@@ -201,11 +183,12 @@ buttonSubmit.addEventListener("click", (e)=>
     });
 
     
-
-    designMenu.addEventListener("change",(e)=>
-    
-    {
-        
+        jsheartColor.style.display="none";
+    jspunsColor.style.display="none";
+   
+    //Add eventlistner for selecting the T-shirt
+    designMenu.addEventListener("change",(e)=>    
+    {        
         if(e.target.value=="js puns")
             {
                 themeColor.style.display="none";
@@ -220,13 +203,16 @@ buttonSubmit.addEventListener("click", (e)=>
             jspunsColor.style.display="none";
             jsheartColor.style.display="inline";
         }
-    })
+    });
+
+    //Check activities checkboxes eventlistener added
 activityCheckbox.addEventListener("change",(e) =>
 {
     if(e.target.type == 'checkbox')
     {
      
        let tagInput= activityCheckbox.getElementsByTagName("input");
+       //check if box is checked and then subtract its free from total ,allow other activities during its same time to be checkable
        if (e.target.checked==false)
        {
         let dateTime=e.target.getAttribute("data-day-and-time");
@@ -236,26 +222,24 @@ activityCheckbox.addEventListener("change",(e) =>
             if(dateTime==tagInput[i].getAttribute("data-day-and-time"))
             {
                 tagInput[i].disabled=false;
-
             }
            }
-           
        }
        
+       //if checked, disable activities running its same time, and add its fee to the total
        else{
         let dateTime=e.target.getAttribute("data-day-and-time");
         console.log(dateTime);
         total +=parseFloat(e.target.getAttribute("data-cost"));
 
-        //console.log(tagInput);
+       
         for(let i=0; i<tagInput.length; i++)
         {
-           // console.log(tagInput[i].getAttribute("data-day-and-time"));
+           
            if(dateTime==tagInput[i].getAttribute("data-day-and-time"))
            {
                tagInput[i].disabled=true;
            }
-
 
         }
         e.target.disabled=false;
@@ -266,17 +250,76 @@ activityCheckbox.addEventListener("change",(e) =>
     }
 })
 
-
-
-
-
  //function places alert next to elements that have incorrect or missing data
- function alertForFields(errorField,string)
+ function alertForFields(errorField,string,boolVal)
     {
-        errorField.insertAdjacentHTML('beforebegin',`<p class="alert-message">${string}</p>`);
+        // let newElementName=errorField.name;
+        // alertForFields[newElementName]=document.createElement("div");
+        let nf=document.getElementById(`${errorField.name}1`);
+        if (nf ==null)
+        {
+            if(boolVal==true)
+            {
+                return;
+            }
+
+            let tempPar=`<p id="${errorField.name}1" class="alert-message">${string}</p>`;
+            errorField.insertAdjacentHTML('beforebegin',tempPar);
+            return;
+
+            //alertFields[errorField]=tempPar;
+        }
+        else{
+            if(boolVal==false)
+              {
+                return;
+            }
+
+            nf.parentNode.removeChild(nf)
+
+        }
+
+
+        // let tempPar=`<p id="${errorField.name}1" class="alert-message">${string}</p>`;
+        // errorField.insertAdjacentHTML('beforebegin',tempPar);
+        // alertFields[errorField]=tempPar;
+        //console.log(alertFields);
     }
 
+    //function to check the form fields and calls alert if field has an issue
+    function checkFields(reg, formField, alertMessage)
+    {
+         let correct = reg.test(formField.value);
+        //  let nf=document.getElementById(`${formField.name}1`);
+        //  if (nf!=null)
+        // {
+        //     if(correct==true)
+        //     {
+        //         nf.parentNode.removeChild(nf);
+        //     }
+        //     return correct;
+        // }
 
+        // else if(correct == false)
+        // {
+        //     alertForFields(formField,alertMessage);
+           
+        // }
+        // return correct;
+        
+
+        // if (correct==true && document.getElementById(`${formField.name}1`)==null)
+        // {
+        //     return correct
+        // }
+        // else if(correct===true)
+        //  {
+             
+        // }
+            alertForFields(formField,alertMessage,correct);
+            return correct;
+
+    }
 
 }
 
