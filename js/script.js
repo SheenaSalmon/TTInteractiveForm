@@ -28,9 +28,6 @@ document.addEventListener("DOMContentLoaded",(e) =>
     const zip =document.getElementById("zip");
 
     name.focus(); //The focus is now on the first field
-    //alertFields={};//object for alert fields;
-
-
     //Create field to hold the total cost of the activities selected
     const totalField=document.createElement("p");
     activityCheckbox.insertAdjacentElement("beforeend",totalField);
@@ -161,13 +158,6 @@ buttonSubmit.addEventListener("click", (e)=>
         }
     })
 
-    //
-    
-
-    
-
- 
-
     //Add and event listener for check the the Job Title, if the job title is "Other", display that created element
     const jobTitle=document.getElementById("title");
     jobTitle.addEventListener("change",
@@ -279,46 +269,15 @@ activityCheckbox.addEventListener("change",(e) =>
 
         }
 
-
-        // let tempPar=`<p id="${errorField.name}1" class="alert-message">${string}</p>`;
-        // errorField.insertAdjacentHTML('beforebegin',tempPar);
-        // alertFields[errorField]=tempPar;
-        //console.log(alertFields);
     }
 
     //function to check the form fields and calls alert if field has an issue
     function checkFields(reg, formField, alertMessage)
     {
          let correct = reg.test(formField.value);
-        //  let nf=document.getElementById(`${formField.name}1`);
-        //  if (nf!=null)
-        // {
-        //     if(correct==true)
-        //     {
-        //         nf.parentNode.removeChild(nf);
-        //     }
-        //     return correct;
-        // }
-
-        // else if(correct == false)
-        // {
-        //     alertForFields(formField,alertMessage);
-           
-        // }
-        // return correct;
         
-
-        // if (correct==true && document.getElementById(`${formField.name}1`)==null)
-        // {
-        //     return correct
-        // }
-        // else if(correct===true)
-        //  {
-             
-        // }
             alertForFields(formField,alertMessage,correct);
             return correct;
-
     }
 
 }
