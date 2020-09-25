@@ -68,13 +68,13 @@ document.addEventListener("DOMContentLoaded",(e) =>
   //check the name field
 function checkName()
 {
-     return checkFields(/^[a-z]+$/i,name, "Please provide your name.");
+     return checkFields(/^[a-z]+[ ]*[a-z]*$/i,name, "Please provide your name.");
 }
 
 //check the email field
 function checkEmail()
 {
-    return checkFields(/^[^@]+@[^@.]+\.[a-z]+$/i,email,"Please enter a valid e-mail address")
+    return checkFields(/^[^@]+@[^@.]+\.com$/i,email,"Please enter a valid e-mail address")
 }
 
 
